@@ -118,6 +118,75 @@ export const logout = async (req, res, next) => {
     }
 }
 
+export const getMyProfile = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.user._id)
+
+        sendToken(res, user, 200, `Welcome Back! ${user.name}`)
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+export const updateProfile = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.user._id)
+        const { name } = req.body;
+        // const avatar = req.files;
+        if (name) {
+            user.name = name
+        }
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Profile Updated Successfully!"
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+export const updatePassword = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.user._id).select("+password")
+        const { oldPassword, newPassword } = req.body;
+        if (!oldPassword || !newPassword) {
+            return res.status(400).json({
+                success: false,
+                message: "Enter All the fields"
+            })
+        }
+
+        const isMatched = await user.comparePassword(oldPassword);
+        if (!isMatched) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid Old Password"
+            })
+        }
+        user.password = newPassword
+
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Password Updated Successfully!"
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
 export const addTask = async (req, res, next) => {
     try {
         const { title, description } = req.body;
@@ -167,7 +236,7 @@ export const updateTask = async (req, res, next) => {
         const { taskId } = req.params;
         const user = await User.findById(req.user._id);
 
-        user.task = user.tasks.find(task => task._id.toString() !== taskId.toString())
+        user.task = user.tasks.find(task => task._id.toString() === taskId.toString())
         user.task.completion = !user.task.completion
 
         await user.save();
@@ -176,6 +245,77 @@ export const updateTask = async (req, res, next) => {
             success: true,
             message: "Task Updated successfully"
         })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+
+export const forgotPassword = async (req, res, next) => {
+    try {
+
+        const { email } = req.body;
+        const user = await User.findOne({ email });;
+
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                message: "User Doesn't Exists"
+            })
+        }
+        const otp = Math.floor(Math.random() * 1000000);
+
+        user.resetPasswordOtp = otp;
+        user.resetPasswordOtpExpiry = Date.now() + 10 * 60 * 1000;
+
+        await user.save()
+        const message = `Your otp for reseting the password is ${otp}. if you did not request for this, please ignore this email.`
+
+        await sendMail(
+            email,
+            "Request for reseting password",
+            message,
+        )
+        res.status(200).json({
+            success: true,
+            message: `OTP sent to ${email}`
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+export const resetPassword = async (req, res, next) => {
+    try {
+        const { otp, newPassword } = req.body;
+        const user = await User.findOne({
+            resetPasswordOtp: otp,
+            resetPasswordOtpExpiry: { $gt: Date.now() }
+        })
+
+
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                message: "Otp invalid or has been Expired"
+            })
+        }
+
+        user.password = newPassword;
+        user.resetPasswordOtp = null;
+        user.resetPasswordOtpExpiry = null;
+        await user.save()
+
+        res
+            .status(200)
+            .json({ success: true, message: `Password Changed Successfully` });
+
     } catch (error) {
         res.status(500).json({
             success: false,
