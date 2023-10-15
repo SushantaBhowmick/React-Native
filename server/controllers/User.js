@@ -174,6 +174,21 @@ export const updateProfile = async (req, res, next) => {
         })
     }
 }
+export const getAllUsers = async(req,res,next)=>{
+    try {
+        const users = await User.find();
+        res.status(200).json({
+            success:true,
+            message:"Get All User Successfully",
+            users
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+    }
 
 export const updatePassword = async (req, res, next) => {
     try {
