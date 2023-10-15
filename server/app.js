@@ -14,6 +14,9 @@ app.use(fileUpload({
 })
 );
 
+app.get('/',(req,res)=>{
+    res.send("<h1>I am Working</h1>")
+})
 //routes
 import User from "./routes/User.js"
 import fileUpload from 'express-fileupload';
