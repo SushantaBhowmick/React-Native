@@ -1,11 +1,15 @@
 import { User } from "../models/users.js";
 import sendMail from "../utils/sendMail.js";
 import { sendToken } from "../utils/sendToken.js";
+import cloudinary from 'cloudinary';
+import fs from 'fs'
+
 
 export const register = async (req, res, next) => {
     try {
         const { name, email, password } = req.body;
-        // const { avatar } = req.files;
+        const avatar = req.files.avatar.tempFilePath;
+
         let user = await User.findOne({ email })
         if (user) {
             return res.status(400).json({
@@ -13,14 +17,19 @@ export const register = async (req, res, next) => {
                 message: "User Already Exists"
             })
         }
+
         const otp = Math.floor(Math.random() * 1000000)
+        const myCloud = await cloudinary.v2.uploader.upload(avatar, {
+            folder: "android"
+        })
+        fs.rmSync("./tmp", { recursive: true })
         user = await User.create({
             name,
             email,
             password,
             avatar: {
-                public_id: "tempId",
-                url: "tempUrl",
+                public_id: myCloud.public_id,
+                url: myCloud.url,
             },
             otp,
             otp_expiry: new Date(Date.now() + process.env.OTP_EXPIRE * 60 * 1000),
@@ -135,10 +144,23 @@ export const updateProfile = async (req, res, next) => {
     try {
         const user = await User.findById(req.user._id)
         const { name } = req.body;
-        // const avatar = req.files;
+        const avatar = req.files.avatar.tempFilePath;
+
         if (name) {
             user.name = name
         }
+        if(avatar){
+            await cloudinary.v2.uploader.destroy(user.avatar.public_id)
+            const myCloud =  await cloudinary.v2.uploader.upload(avatar,{
+                folder:"android"
+            })
+             fs.rmSync("./tmp", { recursive: true })
+             user.avatar={
+                public_id: myCloud.public_id,
+                url: myCloud.url
+             }
+        }
+
         await user.save();
 
         res.status(200).json({
