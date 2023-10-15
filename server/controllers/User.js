@@ -10,6 +10,7 @@ export const register = async (req, res, next) => {
         const { name, email, password } = req.body;
         const avatar = req.files.avatar.tempFilePath;
 
+
         let user = await User.findOne({ email })
         if (user) {
             return res.status(400).json({
