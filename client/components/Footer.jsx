@@ -7,7 +7,7 @@ const Footer = () => {
 
     const navigation = useNavigation();
 
-    ; return (
+    return (
         <View
             style={{
                 padding: 20,

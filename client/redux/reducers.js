@@ -1,6 +1,21 @@
 import { createReducer } from "@reduxjs/toolkit";
 
 export const authReducers = createReducer({},{
+    registerRequest:(state)=>{
+        state.loading=true;
+    },
+    registerSuccess:(state,action)=>{
+        state.loading=false;
+        state.isAuthenticated=true;
+        state.user = action.payload.user;
+        state.message = action.payload.message;
+    },
+    registerFail:(state,action)=>{
+        state.loading=false;
+        state.isAuthenticated=false;
+        state.error = action.payload;
+    },
+
     loginRequest:(state)=>{
         state.loading=true;
     },
@@ -46,6 +61,18 @@ export const authReducers = createReducer({},{
         state.error = action.payload;
 
     },
+    
+    verificationRequest: (state) => {
+        state.loading = true;
+      },
+      verificationSuccess: (state, action) => {
+        state.loading = false;
+        state.message = action.payload;
+      },
+      verificationFail: (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      },
 
     clearError:(state)=>{
         state.error = null;
@@ -98,21 +125,21 @@ export const messageReducer = createReducer({},{
     },
     updateProfileSuccess:(state,action)=>{
         state.loading=false;
-        state.message = action.payload.message;
+        state.message = action.payload;
     },
     updateProfileFail:(state,action)=>{
         state.loading=false;
         state.error = action.payload;
     },
     
-    updatePasswordRequest:(state)=>{
+    changePasswordRequest:(state)=>{
         state.loading=true;
     },
-    updatePasswordSuccess:(state,action)=>{
+    changePasswordSuccess:(state,action)=>{
         state.loading=false;
         state.message = action.payload.message;
     },
-    updatePasswordFail:(state,action)=>{
+    changePasswordFail:(state,action)=>{
         state.loading=false;
         state.error = action.payload;
     },

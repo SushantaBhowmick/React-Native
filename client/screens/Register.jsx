@@ -1,6 +1,9 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Avatar, Button, TextInput } from 'react-native-paper'
+import mime from 'mime'
+import { register } from '../redux/action'
+import { useDispatch } from 'react-redux'
 
 const Register = ({navigation,route}) => {
 
@@ -9,14 +12,25 @@ const Register = ({navigation,route}) => {
   const [password, setPassword] = useState('')
   const [avatar, setAvatar] = useState('')
 
+const dispatch = useDispatch();
 
   const handleImage=()=>{
-    navigation.navigate("camera")
+    navigation.navigate("camera",{
+      updateProfile:false
+    })
   }
   const submitHandler=()=>{
-    console.log("Image has changed")
-    console.log(name,email,password)
-    console.log(route.params.image)
+    const myForm = new FormData();
+    myForm.append("name",name);
+    myForm.append("email",email);
+    myForm.append("password",password);
+    myForm.append("avatar",{
+      uri:avatar,
+      type:mime.getType(avatar),
+      name:avatar.split("/").pop()
+    });
+   dispatch(register(myForm))
+   
   }
   useEffect(()=>{
     if(route.params){
@@ -40,7 +54,7 @@ const Register = ({navigation,route}) => {
       style={{backgroundColor:"gray"}}
     />
     <TouchableOpacity onPress={handleImage}>
-      <Text style={{color:'#900'}}>Change Photo</Text>
+      <Text style={{color:'#900'}}>Choose Photo</Text>
     </TouchableOpacity>
     <View style={{ width: "70%" }}>
         <TextInput
@@ -66,7 +80,9 @@ const Register = ({navigation,route}) => {
         <Button
         disabled={!name || !email || !password}
         style={styles.btn}
-        onPress={submitHandler}> <Text style={{color:'#fff'}}>REGISTER</Text></Button>
+        onPress={submitHandler}> <Text style={{color:'#fff'}}>REGISTER</Text>
+        </Button>
+
         <TouchableOpacity onPress={()=>navigation.navigate("login")}>
       <Text
       style={{color:"#900",height:30,margin:20}}

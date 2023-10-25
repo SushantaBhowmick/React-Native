@@ -11,6 +11,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { loadUser } from './redux/action'
 import { Text } from 'react-native-paper'
 import Loader from './components/Loader'
+import ChangePassowrd from './screens/ChangePassowrd'
+import Verify from './screens/Verify'
 
 
 const Main = () => {
@@ -39,8 +41,10 @@ dispatch(loadUser())
     <Stack.Screen name='home' component={Home} options={{ headerShown: false }} />
     <Stack.Screen name='login' component={Login} options={{ headerShown: false }} />
     <Stack.Screen name='register' component={Register} options={{ headerShown: false }} />
+    <Stack.Screen name='verify' component={Verify} options={{ headerShown: false }} />
     <Stack.Screen name='camera' component={CameraComponent} options={{ headerShown: false }} />
     <Stack.Screen name='profile' component={Profile} options={{ headerShown: false }} />
+    <Stack.Screen name='changepassword' component={ChangePassowrd} options={{ headerShown: false }} />
   </Stack.Navigator>
   {isAuthenticated &&  
     <Footer />

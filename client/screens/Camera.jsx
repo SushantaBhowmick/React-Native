@@ -27,14 +27,23 @@ const CameraComponent = ({navigation,route}) => {
         const data = await ImagePicker.launchImageLibraryAsync({
             allowsEditing: true, aspect: [1, 1], quality: 1
         });
-        return navigation.navigate('register',{image:data.uri})
+        if(route.params.updateProfile){
+
+            return navigation.navigate('profile',{image:data.uri})
+        }else{
+            return navigation.navigate('register',{image:data.uri})
+        }
 
     }
 
     const clickPicture = async () => {
 
         const data = await camera.takePictureAsync();
-        return navigation.navigate('register',{image:data.uri})
+        if(route.params.updateProfile){
+              return navigation.navigate('profile',{image:data.uri})
+        }else{
+            return navigation.navigate('register',{image:data.uri})
+        }
     }
     
     if (hasPermission === null) {

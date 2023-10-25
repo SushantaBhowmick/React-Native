@@ -1,6 +1,50 @@
 import axios from "axios";
 import { server } from "./store";
 
+export const register =(formData)=>async(dispatch)=>{
+    try {
+        dispatch({type:"registerRequest"})
+
+        const {data} = await axios.post(`${server}/register`,formData,{
+            headers:{
+                "Content-Type":"multipart/form-data"
+            }
+        })
+        dispatch({
+            type:"registerSuccess",
+            payload:data
+        })
+
+    } catch (error) {
+        dispatch({
+            type:"registerFail",
+            payload:error.response.data.message
+        })
+    }
+}
+
+export const verify =(otp)=>async(dispatch)=>{
+    try {
+        dispatch({type:"verificationRequest"})
+
+        const {data} = await axios.post(`${server}/verify`,{otp},{
+            headers:{
+                "Content-Type":"application/json"
+            }
+        })
+        dispatch({
+            type:"verificationSuccess",
+            payload:data.message
+        })
+
+    } catch (error) {
+        dispatch({
+            type:"verificationFail",
+            payload:error.response.data.message
+        })
+    }
+}
+
 export const login =(email,password)=>async(dispatch)=>{
     try {
         dispatch({type:"loginRequest"})
@@ -36,7 +80,7 @@ export const loadUser =()=>async(dispatch)=>{
     } catch (error) {
         dispatch({
             type:"loadUserFail",
-            error:error.response.data.message
+            payload:error.response.data.message
         })
     }
 }
@@ -59,7 +103,7 @@ export const addTask =(title,description)=>async(dispatch)=>{
     } catch (error) {
         dispatch({
             type:"addTaskFail",
-            error:error.response.data.message
+            payload:error.response.data.message
         })
     }
 }
@@ -77,7 +121,7 @@ export const updateTask =(taskId)=>async(dispatch)=>{
     } catch (error) {
         dispatch({
             type:"updateTaskFail",
-            error:error.response.data.message
+            payload:error.response.data.message
         })
     }
 }
@@ -95,7 +139,7 @@ export const logout =()=>async(dispatch)=>{
     } catch (error) {
         dispatch({
             type:"logoutFail",
-            error:error.response.data.message
+            payload:error.response.data.message
         })
     }
 }
@@ -113,7 +157,7 @@ export const deleteTask =(taskId)=>async(dispatch)=>{
     } catch (error) {
         dispatch({
             type:"deleteTaskFail",
-            error:error.response.data.message
+            payload:error.response.data.message
         })
     }
 }
@@ -122,38 +166,44 @@ export const updateProfile =(formData)=>async(dispatch)=>{
     try {
         dispatch({type:"updateProfileRequest"})
 
-        const {data} = await axios.put(`${server}/updateprofile/${taskId}`,formData,{
-            headers:{
-                "Content-Type":"multipart/form-data"
-            }
-        });
+        const {data} = await axios.put(`${server}/updateprofile`,formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
         dispatch({
             type:"updateProfileSuccess",
-            payload:data
+            payload:data.message
         })
 
     } catch (error) {
         dispatch({
             type:"updateProfileFail",
-            error:error.response.data.message
+            payload:error.response.data.message
         })
     }
 }
 
-export const ChangePassword =(taskId)=>async(dispatch)=>{
+export const ChangePassword =(oldPassword,newPassword)=>async(dispatch)=>{
     try {
-        dispatch({type:"updatePasswordRequest"})
+        dispatch({type:"changePasswordRequest"})
 
-        const {data} = await axios.delete(`${server}/task/${taskId}`);
+        const {data} = await axios.put(`${server}/updatepassword`,{oldPassword,newPassword},
+        {
+            headers:{
+              "Content-Type": "application/json",
+                
+            }
+        });
         dispatch({
-            type:"updatePasswordSuccess",
+            type:"changePasswordSuccess",
             payload:data
         })
 
     } catch (error) {
         dispatch({
-            type:"updatePasswordFail",
-            error:error.response.data.message
+            type:"changePasswordFail",
+            payload:error.response.data.message
         })
     }
 }
