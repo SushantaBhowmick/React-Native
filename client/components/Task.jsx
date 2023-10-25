@@ -2,15 +2,20 @@ import { View, Text } from 'react-native'
 import React, { useState } from 'react'
 import {Checkbox} from 'react-native-paper'
 import Icon from 'react-native-vector-icons/AntDesign'
+import { useDispatch } from 'react-redux'
+import { deleteTask, loadUser, updateTask } from '../redux/action'
 
 const Task = ({title,description,status,taskId}) => {
     const [completed,setCompleted] = useState(status)
+    const dispatch = useDispatch()
 
     const handleCheckbox=()=>{
         setCompleted(!completed)
+        dispatch(updateTask(taskId))
     }
-    const deleteHandler=(e)=>{
-       console.log("deleting task")
+    const deleteHandler=async()=>{
+      await dispatch(deleteTask(taskId))
+      dispatch(loadUser())
     }
 
   return (

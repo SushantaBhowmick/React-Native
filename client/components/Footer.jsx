@@ -10,22 +10,19 @@ const Footer = () => {
     ; return (
         <View
             style={{
-                padding: 30,
-                backgroundColor: 'black',
+                padding: 20,
+                backgroundColor: 'white',
                 flexDirection: 'row',
-                justifyContent: 'space-around'
+                justifyContent: 'space-around',
+                height:70
             }}
         >
             <TouchableOpacity onPress={() => navigation.navigate("home")}>
-                <Icon name='home' size={30} color={'#fff'} />
+                <Icon name='home' size={30} color={'#900'} />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate("profile")}>
-                <Icon name='user' size={30} color={'#fff'} />
+                <Icon name='user' size={30} color={'#900'} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate("login")}>
-                <Icon name='login' size={30} color={'#fff'} />
-            </TouchableOpacity>
-          
         </View>
     )
 }

@@ -8,32 +8,38 @@ import {
   TouchableOpacity,
   ScrollView
 } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Task from '../components/Task'
 import Icon from 'react-native-vector-icons/Entypo'
 import { Dialog, Button, TextInput } from 'react-native-paper'
+import { useDispatch, useSelector } from 'react-redux'
+import { addTask, loadUser } from '../redux/action'
 
 const Home = ({ navigation }) => {
-  const tasks = [
-    {
-      title: "Task1", description: "Sample Task", completed: false, _id: "kushbhidu"
-    },
-    {
-      title: "Task2", description: "Sample Task", completed: true, _id: "sdfhfiuho"
-    },
-    
-  ];
+  const {user} =useSelector(state=>state.auth)
   const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
+  const [description, setDescription] = useState('');
+  const dispatch = useDispatch();
+  const {loading,message,error} = useSelector(state=>state.message)
 
   const [openDialog, setOpenDialog] = useState(false)
   const hiDialog = () => {
     setOpenDialog(!openDialog)
   }
-  const addTaskHandler = () => {
-    console.log(title)
-    console.log(description)
+  const addTaskHandler = async() => {
+   await dispatch(addTask(title,description))
+   dispatch(loadUser());
   }
+  useEffect(()=>{
+    if(error){
+      alert(error);
+      dispatch({type:"clearError"})
+    }
+    if(message){
+      alert(message);
+      dispatch({type:"clearMessage"})
+    }
+  },[error,message,dispatch,alert])
   return (
     <>
       <View style={{ backgroundColor: '#fff', flex: 1, paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }}>
@@ -43,11 +49,11 @@ const Home = ({ navigation }) => {
             All Tasks
           </Text>
           {
-            tasks.map((item) => (
+            user && user.tasks.map((item) => (
               <Task key={item._id}
                 title={item.title}
                 description={item.description}
-                status={item.completed}
+                status={item.completion}
                 taskId={item._id}
               />
             ))
@@ -83,6 +89,7 @@ const Home = ({ navigation }) => {
             </TouchableOpacity>
             <Button textColor='#900'
               onPress={addTaskHandler}
+              disabled={!title || !description || loading}
             >ADD</Button>
           </View>
         </Dialog.Content>

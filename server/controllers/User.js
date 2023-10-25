@@ -101,7 +101,7 @@ export const login = async (req, res, next) => {
             })
         }
 
-        sendToken(res, user, 200, `Login successfully`)
+        sendToken(res, user, 200, `Welcome Back ${user.name}`)
 
     } catch (error) {
         res.status(500).json({
