@@ -207,3 +207,50 @@ export const ChangePassword =(oldPassword,newPassword)=>async(dispatch)=>{
         })
     }
 }
+
+export const forgotPasswordAc =(email)=>async(dispatch)=>{
+    try {
+        dispatch({type:"forgotPasswordRequest"})
+
+        const {data} = await axios.post(`${server}/forgotpassword`,{email},
+        {
+            headers:{
+              "Content-Type": "application/json",
+                
+            }
+        });
+        dispatch({
+            type:"forgotPasswordSuccess",
+            payload:data
+        })
+
+    } catch (error) {
+        dispatch({
+            type:"forgotPasswordFail",
+            payload:error.response.data.message
+        })
+    }
+}
+
+export const resetPasswordAc =(otp,newPassword)=>async(dispatch)=>{
+    try {
+        dispatch({type:"resetPasswordRequest"})
+
+        const {data} = await axios.put(`${server}/resetpassword`,{otp,newPassword},
+        {
+            headers:{
+              "Content-Type": "application/json",
+            }
+        });
+        dispatch({
+            type:"resetPasswordSuccess",
+            payload:data
+        })
+
+    } catch (error) {
+        dispatch({
+            type:"resetPasswordFail",
+            payload:error.response.data.message
+        })
+    }
+}

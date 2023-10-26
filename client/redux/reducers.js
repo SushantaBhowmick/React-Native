@@ -143,6 +143,30 @@ export const messageReducer = createReducer({},{
         state.loading=false;
         state.error = action.payload;
     },
+    
+    forgotPasswordRequest:(state)=>{
+        state.loading=true;
+    },
+    forgotPasswordSuccess:(state,action)=>{
+        state.loading=false;
+        state.message = action.payload.message;
+    },
+    forgotPasswordFail:(state,action)=>{
+        state.loading=false;
+        state.error = action.payload;
+    },
+
+    resetPasswordRequest:(state)=>{
+        state.loading=true;
+    },
+    resetPasswordSuccess:(state,action)=>{
+        state.loading=false;
+        state.message = action.payload.message;
+    },
+    resetPasswordFail:(state,action)=>{
+        state.loading=false;
+        state.error = action.payload;
+    },
 
     clearError:(state)=>{
         state.error = null;

@@ -13,6 +13,8 @@ import { Text } from 'react-native-paper'
 import Loader from './components/Loader'
 import ChangePassowrd from './screens/ChangePassowrd'
 import Verify from './screens/Verify'
+import ForgotPassword from './screens/ForgotPassword'
+import ResetPassword from './screens/ResetPassword'
 
 
 const Main = () => {
@@ -45,6 +47,8 @@ dispatch(loadUser())
     <Stack.Screen name='camera' component={CameraComponent} options={{ headerShown: false }} />
     <Stack.Screen name='profile' component={Profile} options={{ headerShown: false }} />
     <Stack.Screen name='changepassword' component={ChangePassowrd} options={{ headerShown: false }} />
+    <Stack.Screen name='forgotpassword' component={ForgotPassword} options={{ headerShown: false }} />
+    <Stack.Screen name='resetpassword' component={ResetPassword} options={{ headerShown: false }} />
   </Stack.Navigator>
   {isAuthenticated &&  
     <Footer />
