@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "client",
-    "slug": "client",
+    "name": "auth",
+    "slug": "auth",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -15,7 +15,7 @@
       "**/*"
     ],
     "ios": {
-      "bundleIdentifier": "com.Sushanta.client",
+      "bundleIdentifier": "com.auth.auth",
       "buildNumber": "1.0.0"
     },
     "android": {
